@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <rect width="60" height="60" rx="8" fill="#1a3a5c"/>
+  <text x="50%" y="38" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#e8f0f8" text-anchor="middle">SEC</text>
+  <text x="50%" y="52" font-family="Arial, sans-serif" font-size="8" fill="#7a9ab8" text-anchor="middle">Form 4</text>
+</svg>
