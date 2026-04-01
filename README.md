@@ -1,262 +1,278 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-sec-form4-parser
 
-# n8n-nodes-starter
+An [n8n](https://n8n.io) community node that fetches and parses **SEC Form 4** (Statement of Changes in Beneficial Ownership) filings from [EDGAR](https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=4&dateb=&owner=include&count=40), returning a rich, automation-ready JSON object.
 
-This starter repository helps you build custom integrations for [n8n](https://n8n.io). It includes example nodes, credentials, the node linter, and all the tooling you need to get started.
+[![CI](https://github.com/dkhalife/n8n-sec-form4-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/dkhalife/n8n-sec-form4-parser/actions/workflows/ci.yml)
+[![npm version](https://badge.fury.io/js/n8n-nodes-sec-form4-parser.svg)](https://www.npmjs.com/package/n8n-nodes-sec-form4-parser)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
-## Quick Start
+---
 
-> [!TIP]
-> **New to building n8n nodes?** The fastest way to get started is with `npm create @n8n/node`. This command scaffolds a complete node package for you using the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli).
+## What is SEC Form 4?
 
-**To create a new node package from scratch:**
+Form 4 is filed with the U.S. Securities and Exchange Commission whenever a company **insider** (director, officer, or 10%+ shareholder) buys or sells shares. It is a primary data source for insider-trading analysis and is publicly available on [EDGAR](https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=4).
 
-```bash
-npm create @n8n/node
+---
+
+## Node: SEC Form 4 Parser
+
+### Inputs
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| **URL** | ✅ | — | EDGAR index page URL (ending in `-index.htm`) **or** direct XML URL for the Form 4 filing |
+| **User-Agent App Name** | — | `n8n-sec-form4-parser/1.0` | App name/version sent in the `User-Agent` header. SEC EDGAR requires all automated requests to identify themselves. |
+| **Contact Email** | — | — | Email appended to `User-Agent` per [SEC EDGAR access rules](https://www.sec.gov/os/accessing-edgar-data). Format sent: `<app>/<version> (<email>)` |
+
+**Example URL (index page):**
+```
+https://www.sec.gov/Archives/edgar/data/1527541/000110465926038038/0001104659-26-038038-index.htm
 ```
 
-**Already using this starter? Start developing with:**
-
-```bash
-npm run dev
+**Example URL (direct XML):**
+```
+https://www.sec.gov/Archives/edgar/data/1352851/000110465926038038/tm2610808-1_4seq1.xml
 ```
 
-This starts n8n with your nodes loaded and hot reload enabled.
+---
 
-## What's Included
+### Output JSON structure
 
-This starter repository includes two example nodes to learn from:
+The node outputs a single JSON object per input item. All entities use **CIK as the primary key** so downstream nodes can join data without string-matching names.
 
-- **[Example Node](nodes/Example/)** - A simple starter node that shows the basic structure with a custom `execute` method
-- **[GitHub Issues Node](nodes/GithubIssues/)** - A complete, production-ready example built using the **declarative style**:
-  - **Low-code approach** - Define operations declaratively without writing request logic
-  - Multiple resources (Issues, Comments)
-  - Multiple operations (Get, Get All, Create)
-  - Two authentication methods (OAuth2 and Personal Access Token)
-  - List search functionality for dynamic dropdowns
-  - Proper error handling and typing
-  - Ideal for HTTP API-based integrations
+```jsonc
+{
+  // ── Filing metadata ──────────────────────────────────────────────────────────
+  "filing": {
+    "accessionNumber": "0001104659-26-038038",
+    "periodOfReport": "2026-03-27",
+    "documentType": "4",
+    "schemaVersion": "X0609",
+    "notSubjectToSection16": false,
+    "aff10b5One": false,
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/.../0001104659-26-038038-index.htm",
+    "xmlUrl":    "https://www.sec.gov/Archives/edgar/data/.../tm2610808-1_4seq1.xml",
+    "indexUrl":  "https://www.sec.gov/Archives/edgar/data/.../0001104659-26-038038-index.htm",
+    "issuerCik": "0001527541",                                   // FK → issuers
+    "reportingOwnerCiks": ["0001352851", "0001353085", "..."]    // FK → reportingOwners
+  },
 
-> [!TIP]
-> The declarative/low-code style (used in GitHub Issues) is the recommended approach for building nodes that interact with HTTP APIs. It significantly reduces boilerplate code and handles requests automatically.
+  // ── Issuers — keyed by CIK ───────────────────────────────────────────────────
+  "issuers": {
+    "0001527541": {
+      "cik": "0001527541",
+      "name": "Wheeler Real Estate Investment Trust, Inc.",
+      "tradingSymbol": "WHLR",
+      "foreignTradingSymbol": null
+    }
+  },
 
-Browse these examples to understand both approaches, then modify them or create your own.
+  // ── Reporting owners — keyed by CIK ─────────────────────────────────────────
+  "reportingOwners": {
+    "0001352851": {
+      "cik": "0001352851",
+      "name": "Magnetar Financial LLC",
+      "address": {
+        "street1": "1603 ORRINGTON AVENUE",
+        "street2": "13TH FLOOR",
+        "city": "EVANSTON",
+        "state": "IL",
+        "zipCode": "60201",
+        "nonUSAddress": false,
+        "stateDescription": null
+      },
+      "relationship": {
+        "isDirector": false,
+        "isOfficer": false,
+        "isTenPercentOwner": true,
+        "isOther": false,
+        "officerTitle": null,
+        "otherText": null
+      }
+    }
+    // … additional owners
+  },
 
-## Finding Inspiration
+  // ── Non-derivative transactions (e.g. common stock buys/sells) ───────────────
+  "nonDerivativeTransactions": [
+    {
+      "id": "ndt-0",
+      "issuerCik": "0001527541",          // FK → issuers
+      "reportingOwnerCiks": ["0001352851", "..."],  // FK → reportingOwners
+      "securityTitle": "Common Stock",
+      "securityTitleFootnotes": [],
+      "transactionDate": "2026-03-27",
+      "transactionDateFootnotes": [],
+      "deemedExecutionDate": null,
+      "deemedExecutionDateFootnotes": [],
+      "transactionCoding": {
+        "formType": "4",
+        "transactionCode": "S",           // S=sale, P=purchase, A=award, etc.
+        "equitySwapInvolved": false,
+        "transactionCodingFootnotes": []
+      },
+      "transactionTimeliness": null,
+      "transactionAmounts": {
+        "shares": 3685,
+        "sharesFootnotes": [],
+        "pricePerShare": 1.0374,
+        "pricePerShareFootnotes": ["F4"],
+        "acquiredDisposedCode": "D",      // A=acquired, D=disposed
+        "acquiredDisposedCodeFootnotes": []
+      },
+      "postTransactionAmounts": {
+        "sharesOwnedFollowingTransaction": 159550,
+        "sharesOwnedFollowingTransactionFootnotes": [],
+        "valueOwnedFollowingTransaction": null,
+        "valueOwnedFollowingTransactionFootnotes": []
+      },
+      "ownershipNature": {
+        "directOrIndirectOwnership": "I",  // D=direct, I=indirect
+        "directOrIndirectOwnershipFootnotes": [],
+        "natureOfOwnership": "See Footnotes",
+        "natureOfOwnershipFootnotes": ["F1", "F2", "F3"]
+      }
+    }
+  ],
 
-Looking for more examples? Check out these resources:
+  // ── Derivative transactions (options, warrants, convertibles, etc.) ──────────
+  "derivativeTransactions": [
+    {
+      "id": "dt-0",
+      "issuerCik": "0001527541",
+      "reportingOwnerCiks": ["..."],
+      "securityTitle": "...",
+      "conversionOrExercisePrice": 5.00,
+      "transactionDate": "2026-01-15",
+      "transactionCoding": { "transactionCode": "A", "equitySwapInvolved": false, "...": "..." },
+      "transactionAmounts": { "shares": 1000, "pricePerShare": null, "acquiredDisposedCode": "A", "...": "..." },
+      "exerciseDateOrExpiration": {
+        "exerciseDate": null,
+        "expirationDate": "2031-01-15"
+      },
+      "underlyingSecurity": {
+        "underlyingSecurityTitle": "Common Stock",
+        "underlyingSecurityShares": 1000,
+        "underlyingSecurityValue": null
+      },
+      "postTransactionAmounts": { "sharesOwnedFollowingTransaction": 1000, "...": "..." },
+      "ownershipNature": { "directOrIndirectOwnership": "D", "...": "..." }
+    }
+  ],
 
-- **[npm Community Nodes](https://www.npmjs.com/search?q=keywords:n8n-community-node-package)** - Browse thousands of community-built nodes on npm using the `n8n-community-node-package` tag
-- **[n8n Built-in Nodes](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/nodes)** - Study the source code of n8n's official nodes for production-ready patterns and best practices
-- **[n8n Credentials](https://github.com/n8n-io/n8n/tree/master/packages/nodes-base/credentials)** - See how authentication is implemented for various services
+  // ── Holdings (non-derivative and derivative) — same shapes as transactions ───
+  "nonDerivativeHoldings": [],
+  "derivativeHoldings": [],
 
-These are excellent resources to understand how to structure your nodes, handle different API patterns, and implement advanced features.
+  // ── Footnotes — keyed by footnote ID ─────────────────────────────────────────
+  "footnotes": {
+    "F1": "Magnetar Financial LLC serves as investment manager to …",
+    "F4": "The price reported in Column 4 is a weighted average price …"
+  },
 
-## Prerequisites
-
-Before you begin, install the following on your development machine:
-
-### Required
-
-- **[Node.js](https://nodejs.org/)** (v22 or higher) and npm
-  - Linux/Mac/WSL: Install via [nvm](https://github.com/nvm-sh/nvm)
-  - Windows: Follow [Microsoft's NodeJS guide](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows)
-- **[git](https://git-scm.com/downloads)**
-
-### Recommended
-
-- Follow n8n's [development environment setup guide](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/)
-
-> [!NOTE]
-> The `@n8n/node-cli` is included as a dev dependency and will be installed automatically when you run `npm install`. The CLI includes n8n for local development, so you don't need to install n8n globally.
-
-## Getting Started with this Starter
-
-Follow these steps to create your own n8n community node package:
-
-### 1. Create Your Repository
-
-[Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template, then clone it:
-
-```bash
-git clone https://github.com/<your-organization>/<your-repo-name>.git
-cd <your-repo-name>
+  // ── Signatures ───────────────────────────────────────────────────────────────
+  "signatures": [
+    {
+      "signatureName": "/s/ Hayley A. Stein, Attorney-in-Fact for David J. Snyderman …",
+      "signatureDate": "2026-03-31"
+    }
+  ]
+}
 ```
 
-### 2. Install Dependencies
+> **Transaction codes** (field `transactionCode`): `P` purchase · `S` sale · `A` award/grant · `D` disposition to company · `F` tax withholding · `G` gift · `M` option exercise · `C` conversion · `W` will/inheritance · `X` option expiry · `Z` trust · `J` other
+
+---
+
+## Installation
+
+### In n8n (Community Nodes)
+
+1. Open **Settings → Community Nodes** in your n8n instance.
+2. Enter `n8n-nodes-sec-form4-parser` and click **Install**.
+3. The **SEC Form 4 Parser** node will appear in the node panel under **Finance**.
+
+### Manually (self-hosted)
 
 ```bash
+cd ~/.n8n
+npm install n8n-nodes-sec-form4-parser
+```
+
+Then restart n8n.
+
+---
+
+## SEC EDGAR Access Policy
+
+EDGAR requires all automated clients to include a descriptive `User-Agent` header. Set the **Contact Email** parameter to your email address so requests are compliant:
+
+```
+User-Agent: n8n-sec-form4-parser/1.0 (yourname@example.com)
+```
+
+See the [SEC EDGAR access policy](https://www.sec.gov/os/accessing-edgar-data) for details.
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js v22+
+- npm
+
+### Setup
+
+```bash
+git clone https://github.com/dkhalife/n8n-sec-form4-parser.git
+cd n8n-sec-form4-parser
 npm install
 ```
 
-This installs all required dependencies including the `@n8n/node-cli`.
+### Available scripts
 
-### 3. Explore the Examples
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start n8n with the node loaded and hot-reload |
+| `npm run build` | Compile TypeScript → `dist/` |
+| `npm run lint` | Check for lint errors |
+| `npm run lint:fix` | Auto-fix lint errors |
+| `npm test` | Run unit + EDGAR integration tests |
+| `npm run release` | Bump version, tag, and push (triggers npm publish) |
 
-Browse the example nodes in [nodes/](nodes/) and [credentials/](credentials/) to understand the structure:
-
-- Start with [nodes/Example/](nodes/Example/) for a basic node
-- Study [nodes/GithubIssues/](nodes/GithubIssues/) for a real-world implementation
-
-### 4. Build Your Node
-
-Edit the example nodes to fit your use case, or create new node files by copying the structure from [nodes/Example/](nodes/Example/).
-
-> [!TIP]
-> If you want to scaffold a completely new node package, use `npm create @n8n/node` to start fresh with the CLI's interactive generator.
-
-### 5. Configure Your Package
-
-Update `package.json` with your details:
-
-- `name` - Your package name (must start with `n8n-nodes-`)
-- `author` - Your name and email
-- `repository` - Your repository URL
-- `description` - What your node does
-
-Make sure your node is registered in the `n8n.nodes` array.
-
-### 6. Develop and Test Locally
-
-Start n8n with your node loaded:
+### Running tests
 
 ```bash
-npm run dev
+npm test
 ```
 
-This command runs `n8n-node dev` which:
-
-- Builds your node with watch mode
-- Starts n8n with your node available
-- Automatically rebuilds when you make changes
-- Opens n8n in your browser (usually http://localhost:5678)
-
-You can now test your node in n8n workflows!
-
-> [!NOTE]
-> Learn more about CLI commands in the [@n8n/node-cli documentation](https://www.npmjs.com/package/@n8n/node-cli).
-
-### 7. Lint Your Code
-
-Check for errors:
-
-```bash
-npm run lint
+Tests hit the **live EDGAR API** using the filing at:
+```
+https://www.sec.gov/Archives/edgar/data/1527541/000110465926038038/0001104659-26-038038-index.htm
 ```
 
-Auto-fix issues when possible:
+The suite includes 14 unit tests and 9 integration tests (23 total). Tests are skipped gracefully if EDGAR is unreachable.
 
-```bash
-npm run lint:fix
-```
+---
 
-### 8. Build for Production
+## CI / CD
 
-When ready to publish:
+| Workflow | Trigger | Steps |
+|----------|---------|-------|
+| **CI** (`.github/workflows/ci.yml`) | Push / PR to `master` | lint → build → test |
+| **Publish** (`.github/workflows/publish.yml`) | Version tag push (e.g. `0.2.0`) | lint → build → publish to npm with provenance |
 
-```bash
-npm run build
-```
+Publishing uses GitHub's OIDC token for npm provenance — no long-lived secrets required. See the comments in [`publish.yml`](.github/workflows/publish.yml) for setup instructions.
 
-This compiles your TypeScript code to the `dist/` folder.
-
-### 9. Prepare for Publishing
-
-Before publishing:
-
-1. **Update documentation**: Replace this README with your node's documentation. Use [README_TEMPLATE.md](README_TEMPLATE.md) as a starting point.
-2. **Update the LICENSE**: Add your details to the [LICENSE](LICENSE.md) file.
-3. **Test thoroughly**: Ensure your node works in different scenarios.
-
-### 10. Publish to npm
-
-Publishing is handled automatically by the included GitHub Actions workflow ([.github/workflows/publish.yml](.github/workflows/publish.yml)). It runs on every version tag push and publishes to npm with a provenance attestation — a requirement for n8n community nodes starting May 1, 2026.
-
-#### One-time setup
-
-Configure npm to trust this repository's GitHub Actions workflow so it can publish on your behalf. Log in to [npmjs.com](https://npmjs.com), open your package settings, and under **Publish access → Trusted Publishers** add a publisher with:
-
-- **Repository owner**: your GitHub username or org
-- **Repository name**: your repo name
-- **Workflow name**: `publish.yml`
-
-No token or secret needs to be stored in GitHub — the workflow uses GitHub's OIDC token instead.
-
-> [!NOTE]
-> If you prefer a traditional npm token, create a Granular Access Token on npmjs.com and store it as `NPM_TOKEN` in your repository's Actions secrets. See the comments at the top of `.github/workflows/publish.yml` for details.
-
-#### Releasing a new version
-
-```bash
-npm run release
-```
-
-This lints, builds, prompts for a version bump, updates the changelog, commits, tags, and pushes — which triggers the workflow to publish to npm.
-
-### 11. Submit for Verification (Optional)
-
-Get your node verified for n8n Cloud:
-
-1. Ensure your node meets the [requirements](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/):
-   - Uses MIT license ✅ (included in this starter)
-   - No external package dependencies
-   - Follows n8n's design guidelines
-   - Passes quality and security review
-
-2. Submit through the [n8n Creator Portal](https://creators.n8n.io/nodes)
-
-**Benefits of verification:**
-
-- Available directly in n8n Cloud
-- Discoverable in the n8n nodes panel
-- Verified badge for quality assurance
-- Increased visibility in the n8n community
-
-## Available Scripts
-
-This starter includes several npm scripts to streamline development:
-
-| Script                | Description                                                                 |
-| --------------------- | --------------------------------------------------------------------------- |
-| `npm run dev`         | Start n8n with your node and watch for changes (runs `n8n-node dev`)        |
-| `npm run build`       | Compile TypeScript to JavaScript for production (runs `n8n-node build`)     |
-| `npm run build:watch` | Build in watch mode (auto-rebuild on changes)                               |
-| `npm run lint`        | Check your code for errors and style issues (runs `n8n-node lint`)          |
-| `npm run lint:fix`    | Automatically fix linting issues when possible (runs `n8n-node lint --fix`) |
-| `npm run release`     | Create a new release (runs `n8n-node release`)                              |
-
-> [!TIP]
-> These scripts use the [@n8n/node-cli](https://www.npmjs.com/package/@n8n/node-cli) under the hood. You can also run CLI commands directly, e.g., `npx n8n-node dev`.
-
-## Troubleshooting
-
-### My node doesn't appear in n8n
-
-1. Make sure you ran `npm install` to install dependencies
-2. Check that your node is listed in `package.json` under `n8n.nodes`
-3. Restart the dev server with `npm run dev`
-4. Check the console for any error messages
-
-### Linting errors
-
-Run `npm run lint:fix` to automatically fix most common issues. For remaining errors, check the [n8n node development guidelines](https://docs.n8n.io/integrations/creating-nodes/).
-
-### TypeScript errors
-
-Make sure you're using Node.js v22 or higher and have run `npm install` to get all type definitions.
-
-## Resources
-
-- **[n8n Node Documentation](https://docs.n8n.io/integrations/creating-nodes/)** - Complete guide to building nodes
-- **[n8n Community Forum](https://community.n8n.io/)** - Get help and share your nodes
-- **[@n8n/node-cli Documentation](https://www.npmjs.com/package/@n8n/node-cli)** - CLI tool reference
-- **[n8n Creator Portal](https://creators.n8n.io/nodes)** - Submit your node for verification
-- **[Submit Community Nodes Guide](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/)** - Verification requirements and process
+---
 
 ## Contributing
 
-Have suggestions for improving this starter? [Open an issue](https://github.com/n8n-io/n8n-nodes-starter/issues) or submit a pull request!
+Issues and pull requests are welcome at <https://github.com/dkhalife/n8n-sec-form4-parser>.
+
+---
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](LICENSE.md)
