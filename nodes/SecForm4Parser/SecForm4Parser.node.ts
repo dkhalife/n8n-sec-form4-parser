@@ -48,10 +48,10 @@ export class SecForm4Parser implements INodeType {
 				displayName: 'Contact Email',
 				name: 'email',
 				type: 'string',
-				default: '',
-				placeholder: 'contact@example.com',
+				default: 'bot@example.com',
+				placeholder: 'bot@example.com',
 				description:
-					'Email address appended to User-Agent header for SEC EDGAR compliance (e.g. "User-Agent: myapp/1.0 (contact@example.com)")',
+					'Email address appended to User-Agent header for SEC EDGAR compliance (e.g. "User-Agent: myapp/1.0 (bot@example.com)")',
 			},
 		],
 	};
@@ -70,9 +70,7 @@ export class SecForm4Parser implements INodeType {
 					throw new NodeOperationError(this.getNode(), 'URL is required', { itemIndex: i });
 				}
 
-				const userAgent = email
-					? `${userAgentBase} (${email})`
-					: `${userAgentBase} (contact@example.com)`;
+				const userAgent = `${userAgentBase} (${email || 'bot@example.com'})`;
 
 				const filing = await fetchAndParseForm4(url, userAgent);
 

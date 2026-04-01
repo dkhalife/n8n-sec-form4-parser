@@ -22,7 +22,7 @@ Form 4 is filed with the U.S. Securities and Exchange Commission whenever a comp
 |-----------|----------|---------|-------------|
 | **URL** | ✅ | — | EDGAR index page URL (ending in `-index.htm`) **or** direct XML URL for the Form 4 filing |
 | **User-Agent App Name** | — | `n8n-sec-form4-parser/1.0` | App name/version sent in the `User-Agent` header. SEC EDGAR requires all automated requests to identify themselves. |
-| **Contact Email** | — | — | Email appended to `User-Agent` per [SEC EDGAR access rules](https://www.sec.gov/os/accessing-edgar-data). Format sent: `<app>/<version> (<email>)` |
+| **Contact Email** | — | `bot@example.com` | Email appended to `User-Agent` per [SEC EDGAR access rules](https://www.sec.gov/os/accessing-edgar-data). Format sent: `<app>/<version> (<email>)` |
 
 **Example URL (index page):**
 ```
@@ -208,7 +208,7 @@ Then restart n8n.
 EDGAR requires all automated clients to include a descriptive `User-Agent` header. Set the **Contact Email** parameter to your email address so requests are compliant:
 
 ```
-User-Agent: n8n-sec-form4-parser/1.0 (yourname@example.com)
+User-Agent: n8n-sec-form4-parser/1.0 (bot@example.com)
 ```
 
 See the [SEC EDGAR access policy](https://www.sec.gov/os/accessing-edgar-data) for details.
