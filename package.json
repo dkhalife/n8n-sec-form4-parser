@@ -55,7 +55,7 @@
     "fast-xml-parser": "^4.4.0"
   },
   "engines": {
-    "node": ">=18.10.0"
+    "node": ">=22.0.0"
   },
   "publishConfig": {
     "access": "public"
