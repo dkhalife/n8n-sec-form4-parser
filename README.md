@@ -260,10 +260,10 @@ The suite includes 14 unit tests and 9 integration tests (23 total). Tests are s
 
 | Workflow | Trigger | Steps |
 |----------|---------|-------|
-| **CI** (`.github/workflows/ci.yml`) | Push / PR to `master` | lint → build → test |
-| **Publish** (`.github/workflows/publish.yml`) | Version tag push (e.g. `0.2.0`) | lint → build → publish to npm with provenance |
+| **CI** (`.github/workflows/ci.yml`) | Push / PR to `main` | lint → build → test |
+| **Publish** (`.github/workflows/publish.yml`) | Version tag push (e.g. `0.2.0`) | build → publish to npm with provenance |
 
-Publishing uses GitHub's OIDC token for npm provenance — no long-lived secrets required. See the comments in [`publish.yml`](.github/workflows/publish.yml) for setup instructions.
+Publishing uses GitHub OIDC trusted publishing — no long-lived npm tokens required. The `prod` environment in GitHub must be linked to npm's trusted publisher settings for this package.
 
 ---
 
