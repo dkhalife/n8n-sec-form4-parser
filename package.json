@@ -12,8 +12,8 @@
     "insider-trading"
   ],
   "author": {
-    "name": "n8n-sec-form4-parser",
-    "email": "contact@example.com"
+    "name": "dkhalife",
+    "url": "https://github.com/dkhalife"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,8 @@
     "test": "jest --testPathPattern=tests/"
   },
   "files": [
-    "dist"
+    "dist/nodes",
+    "dist/icons"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
@@ -41,7 +42,7 @@
     ]
   },
   "devDependencies": {
-    "@n8n/node-cli": "*",
+    "@n8n/node-cli": "^0.23.0",
     "@types/jest": "^29.5.0",
     "eslint": "9.39.4",
     "jest": "^29.5.0",
@@ -52,6 +53,9 @@
   },
   "dependencies": {
     "fast-xml-parser": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=18.10.0"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
