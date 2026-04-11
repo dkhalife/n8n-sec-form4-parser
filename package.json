@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-sec-form4-parser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "n8n community node to parse SEC Form 4 (insider trading) filings from EDGAR",
   "license": "MIT",
   "homepage": "https://github.com/dkhalife/n8n-sec-form4-parser",
@@ -31,14 +31,18 @@
   },
   "files": [
     "dist/nodes",
+    "dist/credentials",
     "dist/icons"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
     "strict": false,
-    "credentials": [],
+    "credentials": [
+      "dist/credentials/MySqlCredentials.credentials.js"
+    ],
     "nodes": [
-      "dist/nodes/SecForm4Parser/SecForm4Parser.node.js"
+      "dist/nodes/SecForm4Parser/SecForm4Parser.node.js",
+      "dist/nodes/SecForm4MariadbInserter/SecForm4MariadbInserter.node.js"
     ]
   },
   "devDependencies": {
@@ -52,7 +56,8 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "fast-xml-parser": "^5.5.10"
+    "fast-xml-parser": "^5.5.10",
+    "mysql2": "^3.11.0"
   },
   "engines": {
     "node": ">=22.0.0"
