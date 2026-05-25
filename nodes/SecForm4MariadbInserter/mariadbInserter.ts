@@ -1,5 +1,5 @@
 import type { Connection } from 'mysql2/promise';
-import type { Form4Filing } from '../SecForm4Parser/form4Parser';
+import type { Form4Filing } from '../SecForm4Parser/form4Parser.js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

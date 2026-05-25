@@ -6,7 +6,7 @@ import {
 	formatAccessionNumber,
 	extractAccessionFromUrl,
 	parseForm4Xml,
-} from '../nodes/SecForm4Parser/form4Parser';
+} from '../nodes/SecForm4Parser/form4Parser.js';
 
 const INDEX_URL =
 	'https://www.sec.gov/Archives/edgar/data/1527541/000110465926038038/0001104659-26-038038-index.htm';

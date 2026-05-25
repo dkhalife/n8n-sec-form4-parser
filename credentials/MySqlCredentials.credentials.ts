@@ -1,6 +1,5 @@
 import { ICredentialType, INodeProperties } from 'n8n-workflow';
 
-// eslint-disable-next-line @n8n/community-nodes/credential-test-required
 export class MySqlCredentials implements ICredentialType {
 	name = 'mySqlApi';
 	displayName = 'MySQL / MariaDB';

@@ -4,8 +4,8 @@ import {
 	getCreateTablesSql,
 	upsertForm4Filing,
 	ensureTables,
-} from '../nodes/SecForm4MariadbInserter/mariadbInserter';
-import type { Form4Filing } from '../nodes/SecForm4Parser/form4Parser';
+} from '../nodes/SecForm4MariadbInserter/mariadbInserter.js';
+import type { Form4Filing } from '../nodes/SecForm4Parser/form4Parser.js';
 import type { Connection } from 'mysql2/promise';
 
 // ─── Pure function tests ──────────────────────────────────────────────────────

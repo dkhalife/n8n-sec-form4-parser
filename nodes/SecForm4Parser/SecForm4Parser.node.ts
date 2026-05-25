@@ -7,7 +7,7 @@ import {
 	NodeOperationError,
 } from 'n8n-workflow';
 
-import { fetchAndParseForm4 } from './form4Parser';
+import { fetchAndParseForm4 } from './form4Parser.js';
 
 export class SecForm4Parser implements INodeType {
 	description: INodeTypeDescription = {
