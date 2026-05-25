@@ -9,7 +9,7 @@ export interface PostgresConfig {
 	database: string;
 	user: string;
 	password: string;
-	ssl?: 'disable' | 'allow' | 'require';
+	ssl?: 'disable' | 'require';
 }
 
 export interface TableNames {
@@ -610,7 +610,7 @@ export function buildClientOptions(config: PostgresConfig): {
 		password: config.password,
 	};
 
-	if (config.ssl && config.ssl !== 'disable') {
+	if (config.ssl === 'require') {
 		opts.ssl = { rejectUnauthorized: false };
 	}
 

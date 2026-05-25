@@ -49,12 +49,11 @@ export class PostgresCredentials implements ICredentialType {
 			type: 'options',
 			options: [
 				{ name: 'Disable', value: 'disable' },
-				{ name: 'Allow', value: 'allow' },
 				{ name: 'Require', value: 'require' },
 			],
 			default: 'disable',
 			description:
-				'Whether to use SSL to connect to PostgreSQL. "Require" enables TLS and skips certificate validation.',
+				'Whether to use SSL/TLS when connecting to PostgreSQL. "Require" enables TLS and skips certificate validation.',
 		},
 	];
 }

@@ -198,7 +198,7 @@ Persists parsed Form 4 filings into MariaDB / MySQL. Pipe the output of **SEC Fo
 
 Persists parsed Form 4 filings into PostgreSQL. Same shape as the MariaDB inserter — pick whichever matches your database.
 
-- **Credentials:** `PostgreSQL` (host, port `5432`, database, user, password, SSL: `disable` / `allow` / `require`)
+- **Credentials:** `PostgreSQL` (host, port `5432`, database, user, password, SSL: `disable` / `require`)
 - **Parameters:**
   - **Table Prefix** (default `sec_`) — prefix applied to all 10 tables
   - **Create Tables If Missing** (default `true`) — auto-creates the schema on first run

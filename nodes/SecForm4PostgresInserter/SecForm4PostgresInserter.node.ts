@@ -75,7 +75,7 @@ export class SecForm4PostgresInserter implements INodeType {
 					database: (credential.data?.database as string) ?? '',
 					user: (credential.data?.user as string) ?? '',
 					password: (credential.data?.password as string) ?? '',
-					ssl: (credential.data?.ssl as 'disable' | 'allow' | 'require') ?? 'disable',
+					ssl: (credential.data?.ssl as 'disable' | 'require') ?? 'disable',
 				};
 				const client = new Client(buildClientOptions(config));
 				try {
@@ -109,7 +109,7 @@ export class SecForm4PostgresInserter implements INodeType {
 			database: credentials.database as string,
 			user: credentials.user as string,
 			password: credentials.password as string,
-			ssl: (credentials.ssl as 'disable' | 'allow' | 'require') ?? 'disable',
+			ssl: (credentials.ssl as 'disable' | 'require') ?? 'disable',
 		};
 
 		const client = new Client(buildClientOptions(config));
