@@ -5,8 +5,8 @@ import {
 	upsertForm4Filing,
 	ensureTables,
 	buildClientOptions,
-} from '../nodes/SecForm4PostgresInserter/postgresInserter';
-import type { Form4Filing } from '../nodes/SecForm4Parser/form4Parser';
+} from '../nodes/SecForm4PostgresInserter/postgresInserter.js';
+import type { Form4Filing } from '../nodes/SecForm4Parser/form4Parser.js';
 import type { ClientBase } from 'pg';
 
 // ─── Pure function tests ──────────────────────────────────────────────────────

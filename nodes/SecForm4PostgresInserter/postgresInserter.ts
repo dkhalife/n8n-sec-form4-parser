@@ -1,5 +1,5 @@
 import type { ClientBase } from 'pg';
-import type { Form4Filing } from '../SecForm4Parser/form4Parser';
+import type { Form4Filing } from '../SecForm4Parser/form4Parser.js';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
