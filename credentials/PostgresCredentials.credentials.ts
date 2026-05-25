@@ -1,6 +1,5 @@
 import { ICredentialType, INodeProperties } from 'n8n-workflow';
 
-// eslint-disable-next-line @n8n/community-nodes/credential-test-required
 export class PostgresCredentials implements ICredentialType {
 	name = 'postgres';
 	displayName = 'PostgreSQL';

@@ -17,8 +17,8 @@ import {
 	getTableNames,
 	upsertForm4Filing,
 	type PostgresConfig,
-} from './postgresInserter';
-import type { Form4Filing } from '../SecForm4Parser/form4Parser';
+} from './postgresInserter.js';
+import type { Form4Filing } from '../SecForm4Parser/form4Parser.js';
 
 export class SecForm4PostgresInserter implements INodeType {
 	description: INodeTypeDescription = {
@@ -38,7 +38,6 @@ export class SecForm4PostgresInserter implements INodeType {
 		usableAsTool: true,
 		credentials: [
 			{
-				// eslint-disable-next-line @n8n/community-nodes/no-credential-reuse
 				name: 'postgres',
 				required: true,
 				testedBy: 'postgresConnectionTest',

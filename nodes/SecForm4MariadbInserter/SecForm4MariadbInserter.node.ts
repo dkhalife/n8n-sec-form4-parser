@@ -16,8 +16,8 @@ import {
 	getTableNames,
 	upsertForm4Filing,
 	type MariaDbConfig,
-} from './mariadbInserter';
-import type { Form4Filing } from '../SecForm4Parser/form4Parser';
+} from './mariadbInserter.js';
+import type { Form4Filing } from '../SecForm4Parser/form4Parser.js';
 
 export class SecForm4MariadbInserter implements INodeType {
 	description: INodeTypeDescription = {
@@ -37,7 +37,6 @@ export class SecForm4MariadbInserter implements INodeType {
 		usableAsTool: true,
 		credentials: [
 			{
-				// eslint-disable-next-line @n8n/community-nodes/no-credential-reuse
 				name: 'mySqlApi',
 				required: true,
 				testedBy: 'mySqlConnectionTest',
