@@ -184,6 +184,30 @@ The node outputs a single JSON object per input item. All entities use **CIK as 
 
 ---
 
+## Node: SEC Form 4 MariaDB Inserter
+
+Persists parsed Form 4 filings into MariaDB / MySQL. Pipe the output of **SEC Form 4 Parser** directly into this node.
+
+- **Credentials:** `MySQL / MariaDB` (host, port `3306`, database, user, password)
+- **Parameters:**
+  - **Table Prefix** (default `sec_`) — prefix applied to all 10 tables (e.g. `sec_filings`, `sec_issuers`, …)
+  - **Create Tables If Missing** (default `true`) — auto-creates the schema on first run
+- **Upsert semantics:** uses `INSERT ... ON DUPLICATE KEY UPDATE`. Re-running on the same filing is idempotent.
+
+## Node: SEC Form 4 PostgreSQL Inserter
+
+Persists parsed Form 4 filings into PostgreSQL. Same shape as the MariaDB inserter — pick whichever matches your database.
+
+- **Credentials:** `PostgreSQL` (host, port `5432`, database, user, password, SSL: `disable` / `require`)
+- **Parameters:**
+  - **Table Prefix** (default `sec_`) — prefix applied to all 10 tables
+  - **Create Tables If Missing** (default `true`) — auto-creates the schema on first run
+- **Upsert semantics:** uses `INSERT ... ON CONFLICT (...) DO UPDATE`. Re-running on the same filing is idempotent.
+
+Both inserters produce the same 10-table schema (`issuers`, `reporting_owners`, `filings`, `filing_owners`, `non_derivative_transactions`, `derivative_transactions`, `non_derivative_holdings`, `derivative_holdings`, `footnotes`, `signatures`) and return per-item upsert counts.
+
+---
+
 ## Installation
 
 ### In n8n (Community Nodes)
