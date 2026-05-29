@@ -233,6 +233,14 @@ function toStr(v: unknown): string | null {
 	return s === '' ? null : s;
 }
 
+// Strip timezone offsets from date strings (e.g. "2026-05-22-05:00" → "2026-05-22")
+function toDateStr(v: unknown): string | null {
+	const s = toStr(v);
+	if (!s) return null;
+	const m = s.match(/^(\d{4}-\d{2}-\d{2})/);
+	return m ? m[1] : s;
+}
+
 function normalizeCik(v: unknown): string {
 	const s = toStr(v);
 	if (!s) return '';
@@ -255,6 +263,11 @@ function toBool(v: unknown): boolean {
 function extractStr(field: unknown): { value: string | null; footnotes: string[] } {
 	const { value, footnotes } = extractValue(field);
 	return { value: toStr(value), footnotes };
+}
+
+function extractDateStr(field: unknown): { value: string | null; footnotes: string[] } {
+	const { value, footnotes } = extractValue(field);
+	return { value: toDateStr(value), footnotes };
 }
 
 function extractNum(field: unknown): { value: number | null; footnotes: string[] } {
@@ -617,8 +630,8 @@ export function parseForm4Xml(
 	for (const [i, tx] of (doc.nonDerivativeTable?.nonDerivativeTransaction ?? []).entries()) {
 		const t = tx as XmlNonDerivativeTransaction;
 		const secTitle = extractStr(t.securityTitle);
-		const txDate = extractStr(t.transactionDate);
-		const deemedDate = extractStr(t.deemedExecutionDate);
+		const txDate = extractDateStr(t.transactionDate);
+		const deemedDate = extractDateStr(t.deemedExecutionDate);
 		const timeli = extractStr(t.transactionTimeliness);
 		nonDerivativeTransactions.push({
 			id: `ndt-${i}`,
@@ -644,11 +657,11 @@ export function parseForm4Xml(
 		const t = tx as XmlDerivativeTransaction;
 		const secTitle = extractStr(t.securityTitle);
 		const convPrice = extractNum(t.conversionOrExercisePrice);
-		const txDate = extractStr(t.transactionDate);
-		const deemedDate = extractStr(t.deemedExecutionDate);
+		const txDate = extractDateStr(t.transactionDate);
+		const deemedDate = extractDateStr(t.deemedExecutionDate);
 		const timeli = extractStr(t.transactionTimeliness);
-		const exerciseDate = extractStr(t.exerciseDate);
-		const expirationDate = extractStr(t.expirationDate);
+		const exerciseDate = extractDateStr(t.exerciseDate);
+		const expirationDate = extractDateStr(t.expirationDate);
 		const ulTitle = extractStr(t.underlyingSecurityTitle);
 		const ulShares = extractNum(t.underlyingSecurityShares);
 		const ulValue = extractNum(t.underlyingSecurityValue);
@@ -708,8 +721,8 @@ export function parseForm4Xml(
 		const h = hx as XmlDerivativeHolding;
 		const secTitle = extractStr(h.securityTitle);
 		const convPrice = extractNum(h.conversionOrExercisePrice);
-		const exerciseDate = extractStr(h.exerciseDate);
-		const expirationDate = extractStr(h.expirationDate);
+		const exerciseDate = extractDateStr(h.exerciseDate);
+		const expirationDate = extractDateStr(h.expirationDate);
 		const ulTitle = extractStr(h.underlyingSecurityTitle);
 		const ulShares = extractNum(h.underlyingSecurityShares);
 		const ulValue = extractNum(h.underlyingSecurityValue);
@@ -753,7 +766,7 @@ export function parseForm4Xml(
 	for (const sig of doc.ownerSignature ?? []) {
 		signatures.push({
 			signatureName: toStr(sig.signatureName) ?? '',
-			signatureDate: toStr(sig.signatureDate) ?? '',
+			signatureDate: toDateStr(sig.signatureDate) ?? '',
 		});
 	}
 
@@ -763,7 +776,7 @@ export function parseForm4Xml(
 	return {
 		filing: {
 			accessionNumber,
-			periodOfReport: toStr(doc.periodOfReport) ?? '',
+			periodOfReport: toDateStr(doc.periodOfReport) ?? '',
 			documentType: toStr(doc.documentType) ?? '',
 			schemaVersion: toStr(doc.schemaVersion) ?? '',
 			notSubjectToSection16: toBool(doc.notSubjectToSection16),
