@@ -201,6 +201,24 @@ describe('parseForm4Xml with minimal XML', () => {
 		expect(result.filing.issuerCik).toBe('0001527541');
 		expect(result.filing.reportingOwnerCiks).toContain('0000012345');
 	});
+	it('strips timezone offset from periodOfReport', () => {
+		const xmlWithTz = minimalXml.replace(
+			'<periodOfReport>2026-03-27</periodOfReport>',
+			'<periodOfReport>2026-03-27-05:00</periodOfReport>',
+		);
+		const result = parseForm4Xml(xmlWithTz, sourceUrl, xmlUrl, sourceUrl);
+		expect(result.filing.periodOfReport).toBe('2026-03-27');
+	});
+
+	it('strips timezone offset from transactionDate', () => {
+		const xmlWithTz = minimalXml.replace(
+			'<transactionDate><value>2026-03-27</value></transactionDate>',
+			'<transactionDate><value>2026-03-27-05:00</value></transactionDate>',
+		);
+		const result = parseForm4Xml(xmlWithTz, sourceUrl, xmlUrl, sourceUrl);
+		const tx = result.nonDerivativeTransactions[0];
+		expect(tx.transactionDate).toBe('2026-03-27');
+	});
 });
 
 // ─── Integration tests (real EDGAR network calls) ─────────────────────────────
