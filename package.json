@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "n8n community node to parse SEC Form 4 (insider trading) filings from EDGAR",
   "license": "MIT",
+  "packageManager": "yarn@4.16.0",
   "homepage": "https://github.com/dkhalife/n8n-sec-form4-parser",
   "keywords": [
     "n8n-community-node-package",
@@ -52,6 +53,7 @@
     "@types/pg": "^8.20.0",
     "eslint": "9.39.4",
     "jest": "^30.3.0",
+    "n8n-workflow": "^2.25.1",
     "prettier": "3.8.3",
     "release-it": "20.0.1",
     "ts-jest": "^29.1.0",

@@ -244,31 +244,31 @@ See the [SEC EDGAR access policy](https://www.sec.gov/os/accessing-edgar-data) f
 ### Prerequisites
 
 - Node.js v22+
-- npm
+- Yarn (Corepack-managed; run `corepack enable`)
 
 ### Setup
 
 ```bash
 git clone https://github.com/dkhalife/n8n-sec-form4-parser.git
 cd n8n-sec-form4-parser
-npm install
+yarn install
 ```
 
 ### Available scripts
 
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Start n8n with the node loaded and hot-reload |
-| `npm run build` | Compile TypeScript → `dist/` |
-| `npm run lint` | Check for lint errors |
-| `npm run lint:fix` | Auto-fix lint errors |
-| `npm test` | Run unit + EDGAR integration tests |
-| `npm run release` | Bump version, tag, and push (triggers npm publish) |
+| `yarn dev` | Start n8n with the node loaded and hot-reload |
+| `yarn build` | Compile TypeScript → `dist/` |
+| `yarn lint` | Check for lint errors |
+| `yarn lint:fix` | Auto-fix lint errors |
+| `yarn test` | Run unit + EDGAR integration tests |
+| `yarn release` | Bump version, tag, and push (triggers npm publish) |
 
 ### Running tests
 
 ```bash
-npm test
+yarn test
 ```
 
 Tests hit the **live EDGAR API** using the filing at:
