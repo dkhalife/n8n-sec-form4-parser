@@ -1778,12 +1778,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@n8n/errors@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@n8n/errors@npm:0.8.0"
+"@n8n/errors@npm:0.10.0":
+  version: 0.10.0
+  resolution: "@n8n/errors@npm:0.10.0"
   dependencies:
     callsites: "npm:3.1.0"
-  checksum: 10c0/e7841dbfd55785690514f20b7f43f12045e54525360e9669a33cc0021d4122cfd3cfa02704e6180a04556c9f679346b9946cd53359100c45247349840d2457bd
+  checksum: 10c0/1fea014856e20f4b4f309c148dc44ce19568add52b93958ce3d0554a437dc7d02c0d2223d4b48349661d5568270b2823d26f79059a53f7f882d3ecc9d55cd7e0
   languageName: node
   linkType: hard
 
@@ -1799,12 +1799,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@n8n/expression-runtime@npm:0.16.0":
-  version: 0.16.0
-  resolution: "@n8n/expression-runtime@npm:0.16.0"
+"@n8n/expression-runtime@npm:0.18.1":
+  version: 0.18.1
+  resolution: "@n8n/expression-runtime@npm:0.18.1"
   dependencies:
-    "@n8n/errors": "npm:0.8.0"
-    "@n8n/tournament": "npm:1.2.0"
+    "@n8n/errors": "npm:0.10.0"
+    "@n8n/tournament": "npm:1.4.0"
     isolated-vm: "npm:^6.1.2"
     jmespath: "npm:0.16.0"
     js-base64: "npm:3.7.8"
@@ -1815,7 +1815,7 @@ __metadata:
     title-case: "npm:3.0.3"
     transliteration: "npm:2.3.5"
     zod: "npm:3.25.67"
-  checksum: 10c0/0d624a61b63b6071f5d8cbc3461b72f2187999ec6581382ed2baa6e600ecd587312ec1cb151dd8168af5a9704c19987420eb59e1dcfc4bedd3ac1d257282448a
+  checksum: 10c0/432006815b88d2b6a183dff2745308cbaace0791e47df67c915aa23efbf19aee2e2e71cb73171f57e991e5baa98756e5c79413852559b474f1d8a36de56c96db
   languageName: node
   linkType: hard
 
@@ -1847,14 +1847,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@n8n/tournament@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@n8n/tournament@npm:1.2.0"
+"@n8n/tournament@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@n8n/tournament@npm:1.4.0"
   dependencies:
     ast-types: "npm:^0.16.1"
     esprima-next: "npm:^5.8.4"
     recast: "npm:^0.22.0"
-  checksum: 10c0/100300f3caded594c573fb6aa5cb54174508020108c4012f12197ca3722e6410c245926e263522470794cd2b6016307c6f13b59478ddefd428b12ebbedf8910b
+  checksum: 10c0/c8925b6257f8dc13367b9da4f4b40de053abea3e8f28f7e0d342385895a0ebf1eba37e88ee66bfd367379d0251857a71a32a6eedd9a305cf89264c6c4afd4207
   languageName: node
   linkType: hard
 
@@ -6225,12 +6225,12 @@ __metadata:
   linkType: soft
 
 "n8n-workflow@npm:^2.25.1":
-  version: 2.25.1
-  resolution: "n8n-workflow@npm:2.25.1"
+  version: 2.27.1
+  resolution: "n8n-workflow@npm:2.27.1"
   dependencies:
-    "@n8n/errors": "npm:0.8.0"
-    "@n8n/expression-runtime": "npm:0.16.0"
-    "@n8n/tournament": "npm:1.2.0"
+    "@n8n/errors": "npm:0.10.0"
+    "@n8n/expression-runtime": "npm:0.18.1"
+    "@n8n/tournament": "npm:1.4.0"
     ast-types: "npm:0.16.1"
     callsites: "npm:3.1.0"
     esprima-next: "npm:5.8.4"
@@ -6245,11 +6245,11 @@ __metadata:
     recast: "npm:0.22.0"
     title-case: "npm:3.0.3"
     transliteration: "npm:2.3.5"
-    uuid: "npm:10.0.0"
+    uuid: "npm:11.1.1"
     xml2js: "npm:0.6.2"
   peerDependencies:
     zod: 3.25.67
-  checksum: 10c0/65ae1a88809526ad0dfeae7746e69ed89e5a09374e28b52a548d37225bc1c58ae25885b1819dc1080f0678ac9460c012196f4223ba691da3fde40eb0fda23d5b
+  checksum: 10c0/461e44808976f08e5bf5c1bffe884c08a7681370032e706baee23875558d002ce0c4420b211700e522c7c690e5a23b6a0bd177fdf4c600039692e36ec6193e71
   languageName: node
   linkType: hard
 
@@ -8027,21 +8027,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:10.0.0, uuid@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "uuid@npm:10.0.0"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 10c0/eab18c27fe4ab9fb9709a5d5f40119b45f2ec8314f8d4cf12ce27e4c6f4ffa4a6321dc7db6c515068fa373c075b49691ba969f0010bf37f44c37ca40cd6bf7fe
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^11.1.0":
+"uuid@npm:11.1.1, uuid@npm:^11.1.0":
   version: 11.1.1
   resolution: "uuid@npm:11.1.1"
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10c0/9e3af58eba872ece5a5e76f4773a94fc78a0ef2c2444c38dbe6b42f41dadf76c01850fd783604f27986f6195e6286aef064d45987d401b2a33127b98ddf7c0c5
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10c0/eab18c27fe4ab9fb9709a5d5f40119b45f2ec8314f8d4cf12ce27e4c6f4ffa4a6321dc7db6c515068fa373c075b49691ba969f0010bf37f44c37ca40cd6bf7fe
   languageName: node
   linkType: hard
 
